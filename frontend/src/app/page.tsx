@@ -1,7 +1,7 @@
 "use client";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { calculate, getConfig, type CalculateRequest, type CalculateResponse } from "@/lib/api";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export default function Home() {
   const [form, setForm] = useState<CalculateRequest>({
@@ -35,7 +35,7 @@ export default function Home() {
             <div>
               <label className="block text-sm mb-1">نوع پروژه</label>
               <p className="text-xs text-zinc-500 mb-1">نوع کلی محصول نرم‌افزاری شما</p>
-              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.projectType} onChange={(e) => update("projectType", e.target.value as any)}>
+              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.projectType} onChange={(e) => update("projectType", e.target.value as CalculateRequest["projectType"])}>
                 <option value="webapp">وب‌اپ</option>
                 <option value="shop">فروشگاه</option>
                 <option value="erp">ERP</option>
@@ -49,7 +49,7 @@ export default function Home() {
             <div>
               <label className="block text-sm mb-1">مقیاس</label>
               <p className="text-xs text-zinc-500 mb-1">کوچک/متوسط/بزرگ بودن دامنه پروژه</p>
-              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.scale} onChange={(e) => update("scale", e.target.value as any)}>
+              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.scale} onChange={(e) => update("scale", e.target.value as CalculateRequest["scale"])}>
                 <option value="small">کوچک</option>
                 <option value="medium">متوسط</option>
                 <option value="large">بزرگ</option>
@@ -63,7 +63,7 @@ export default function Home() {
             <div>
               <label className="block text-sm mb-1">زمان تحویل</label>
               <p className="text-xs text-zinc-500 mb-1">فوری/سریع هزینه را به‌خاطر فشردگی زمان افزایش می‌دهد</p>
-              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.delivery} onChange={(e) => update("delivery", e.target.value as any)}>
+              <select className="w-full border rounded-lg p-2 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100" value={form.delivery} onChange={(e) => update("delivery", e.target.value as CalculateRequest["delivery"])}>
                 <option value="normal">عادی</option>
                 <option value="fast">سریع</option>
                 <option value="urgent">فوری</option>
@@ -91,7 +91,7 @@ export default function Home() {
           <div>
             <label className="block text-sm mb-1">تکنولوژی‌ها</label>
             <div className="flex flex-wrap gap-2">
-              {Object.values(coeff["technology"] || []).map((t: any) => (
+              {Object.values(coeff["technology"] || []).map((t: { key: string; label?: string }) => (
                 <button key={t.key} className={`px-3 py-1 rounded-full border dark:border-zinc-700 ${form.technologies.includes(t.key) ? "bg-blue-600 text-white border-blue-600" : "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"}`} onClick={() => update("technologies", form.technologies.includes(t.key) ? form.technologies.filter((x) => x !== t.key) : [...form.technologies, t.key])}>
                   {t.label || t.key}
                 </button>
@@ -102,7 +102,7 @@ export default function Home() {
           <div>
             <label className="block text-sm mb-1">فیچرها</label>
             <div className="flex flex-wrap gap-2">
-              {Object.values(coeff["feature"] || []).map((f: any) => (
+              {Object.values(coeff["feature"] || []).map((f: { key: string; label?: string }) => (
                 <button key={f.key} className={`px-3 py-1 rounded-full border dark:border-zinc-700 ${form.specialFeatures.includes(f.key) ? "bg-emerald-600 text-white border-emerald-600" : "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"}`} onClick={() => update("specialFeatures", form.specialFeatures.includes(f.key) ? form.specialFeatures.filter((x) => x !== f.key) : [...form.specialFeatures, f.key])}>
                   {f.label || f.key}
                 </button>
@@ -150,7 +150,7 @@ function BreakdownCard({ data }: { data: CalculateResponse }) {
           {rows.map((r, i) => (
             <tr key={i} className="odd:bg-gray-50 dark:odd:bg-zinc-800/60">
               <td className="p-3 font-medium">{r[0]}</td>
-              <td className="p-3 text-left">{r[1] as any}</td>
+              <td className="p-3 text-left">{r[1]}</td>
             </tr>
           ))}
         </tbody>
